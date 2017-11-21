@@ -9,7 +9,7 @@
 
 .align 2
 CURRENT_DIRECTION:
-.word 0 /* TODO: define direction enum values */
+.word 0 /* 2 bits, MSb is +/-, LSb is x/y. */
 CURRENT_POSITION:
 .word 0 /* pointer to cell in GRID_ARRAY */
 
@@ -51,6 +51,15 @@ _start:
 	stwio r2, 8(r9)
 	srli r2, r2, 16
 	stwio r2, 12(r9)
+
+	/* Reset current position to origin. */
+	movia r2, CURRENT_POSITION
+	movia r8, GRID_ARRAY_BASE
+	stw r8, 0(r2)
+
+	/* Reset direction to +y */
+	movia r8, DIRECTION_POS_Y
+	stw r8, 0(r2)
 
 /*
  * In this state, the application is resumed.
@@ -107,6 +116,24 @@ STATE_ADVANCE_CELL:
 	/* Disable global interrupts; critical section. */
 	wrctl ctl0, r0
 
+	movia r16, CURRENT_POSITION
+	ldw r4, 0(r16)
+	movia r16, CURRENT_DIRECTION
+	ldw r5, 0(r16)
+	call GET_NEXT_CELL
+
+	/* Update current position. */
+	movia r16, CURRENT_POSITION
+	stw r2, 0(r16)
+
+	/* Transition into scan mode. */
+	br STATE_SCAN_AHEAD
+
+/* Scan cell boundaries */
+STATE_SCAN_AHEAD:
+	/* Poll sensors to see if we can move straight ahead.
+	 * If we can't move ahead, adjust direction accordingly. */
+	 /* TODO */
 
 	/* Resume takes care of re-enabling appropriate interrupts. */
 	br STATE_RESUME
