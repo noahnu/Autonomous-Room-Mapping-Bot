@@ -15,3 +15,9 @@
 
 .equ PWM_INTERVAL, 262150 /* 2.62ms */
 .equ POSITION_TMR_INTERVAL, 100000000 /* 1 second */
+
+/* Direction ENUM */
+.equ DIRECTION_POS_X, 3 /* 0b11 */ 
+.equ DIRECTION_POS_Y, 2 /* 0b10 */
+.equ DIRECTION_NEG_X, 1 /* 0b01 */
+.equ DIRECTION_NEG_Y, 0 /* 0b00 */

@@ -33,10 +33,10 @@ GET_NEXT_CELL:
     andi r19, r19, 0xFFFF
     srli r20, r2, 16
 
-    /* r0: 00 -> -y */
-    movi r16, 1 /* 01 -> -x */
-    movi r17, 2 /* 10 -> +y */
-    movi r18, 3 /* 11 -> +x */
+    /* r0: DIRECTION_NEG_Y */
+    movi r16, DIRECTION_NEG_X
+    movi r17, DIRECTION_POS_Y
+    movi r18, DIRECTION_POS_X
 
     /* TODO: Rewrite without branches? */
     beq r5, r0, GET_NEXT_CELL_NEG_Y
