@@ -53,6 +53,9 @@ status and renders it on the screen (either graphically or with ASCII art).
 ## System Requirements
 
 - DE1-SOC w/ NIOS II
+    - [Docs: Assembler Directives](https://sourceware.org/binutils/docs/as/Pseudo-Ops.html#Pseudo-Ops)
+    - [Docs: Instruction Set](http://www-ug.eecg.toronto.edu/desl/manuals/n2cpu_nii51017.pdf)
+    - [Docs: Application Binary Interface](https://www.altera.com/content/dam/altera-www/global/en_US/pdfs/literature/hb/nios2/n2cpu_nii51016.pdf)
 - Lego Controller w/ sensors and motors
 
 Can also be simulated: http://cpulator.01xz.net
