@@ -1,19 +1,4 @@
-/* ============ CONSTANTS ============ */
-
-.equ SDRAM_END, 0x03FFFFF0
-.equ LEGO_CONTROLLER, 0xFF200060
-
-.equ TIMER_1, 0xFF202000
-.equ IRQ_TIMER_1, 0x1
-.equ TIMER_2, 0xFF202020
-.equ IRQ_TIMER_2, 0x800
-.equ HEX_LOWER, 0xFF200020
-.equ HEX_UPPER, 0xFF200030
-.equ SLIDER_SWITCHES, 0xFF200040
-.equ PUSH_BUTTONS, 0xFF200050
-
-.equ PWM_INTERVAL, 262150 /* 2.62ms */
-.equ POSITION_TMR_INTERVAL, 100000000 /* 1 second */
+.include "constants.s"
 
 /* ============ DATA ============ */
 
@@ -21,6 +6,12 @@
 
 .global GRID_ARRAY_BASE
 .global GRID_ARRAY_END
+
+.align 2
+CURRENT_DIRECTION:
+.word 0 /* TODO: define direction enum values */
+CURRENT_POSITION:
+.word 0 /* pointer to cell in GRID_ARRAY */
 
 .align 0
 GRID_ARRAY_BASE:
@@ -40,7 +31,7 @@ _start:
 	movia r8, LEGO_CONTROLLER
     
 	/* default direction register value */
-	movia r2, 0x07f557ff
+	movia r2, DEFAULT_LEGO_DIRECTION
 	stwio r2, 4(r8)
   
 	/* turn off all motors/sensors */
@@ -61,29 +52,55 @@ _start:
 	srli r2, r2, 16
 	stwio r2, 12(r9)
 
-	/* Enable interrupt for Timer 1 & 2 */
-	movia r2, IRQ_TIMER_1
-	ori r2, r2, IRQ_TIMER_2
-	wrctl ctl3, r2
+/*
+ * In this state, the application is resumed.
+ */
+STATE_RESUME:
+	/* Disable global interrupts; critical section. */
+	wrctl ctl0, r0
 
-STATE_INITIALIZATION:
-	movia r9, TIMER_1
-	movia r10, TIMER_2
+	/* Disable motors. Stop movement. */
+	movia r8, LEGO_CONTROLLER
+	movia r9, 0xFFFFFFFA /* 0b...1010 */
+	stwio r9, 0(r8)
 
-	/* Enable global interrupts. */
+	/* Enable interrupt for Timer 1 & 2. */
+	movia r8, IRQ_TIMER_1
+	ori r8, r8, IRQ_TIMER_2
+	wrctl ctl3, r8
+
+	movia r8, TIMER_1
+	movia r9, TIMER_2
+
+	/* Re-/Enable global interrupts. */
 	movi r2, 1
 	wrctl ctl0, r2
 
+	/* TODO: Make sure these are RESET, not just continued? */
+
 	/* Enable PWM timer. */
 	movia r2, 7
-	stwio r2, 4(r9)
+	stwio r2, 4(r8)
 
 	/* Enable position timer. */
 	movia r2, 7
-	stwio r2, 4(r10)
+	stwio r2, 4(r9)
 
-STATE_ACTIVE:
 	br LOOP_FOREVER
+
+/*
+ * This state is entered when the robot is deemed to have advanced
+ * to a new position in the moveable area. We must determine the
+ * direction the robot was facing, and along with its 'old' position,
+ * determine the robot's current position.
+ */
+STATE_ADVANCE_CELL:
+	/* Disable global interrupts; critical section. */
+	wrctl ctl0, r0
+
+
+	/* Resume takes care of re-enabling appropriate interrupts. */
+	br STATE_RESUME
 
 LOOP_FOREVER:
 	br LOOP_FOREVER
@@ -98,6 +115,13 @@ IHANDLER:
 	stw et, 4(sp)
 	stw ea, 8(sp)
 
+	/* NOTE: on nested interrupts.
+	 * 
+	 * Due to the way we handle 'states', only select interrupts
+	 * are able to re-enable the global interrupt bit; e.g. the
+	 * sensor interrupts. The order the interrupts are handled
+	 * are thus extremely important to their correctness. */
+
 	/* Registers we will use. */
 	stw r2, 12(sp)
 	stw r3, 16(sp)
@@ -105,7 +129,9 @@ IHANDLER:
 
 	rdctl et, ctl4 /* ipending */
 
-/* PWM */
+/*
+ * Simple Pulse-Width Modulation (PWM)
+ */
 IHANDLER_TIMER_1:
 	movia r2, IRQ_TIMER_1
 	and r2, r2, et
@@ -122,14 +148,26 @@ IHANDLER_TIMER_1:
 	movia r2, TIMER_1
 	stwio r0, 0(r2)
 
-/* Position timer. */
+/*
+ * Position timer. This interrupt has the highest priority, however
+ * it should NEVER be triggered during another interrupt.
+ *
+ * In this handler, the position timer has elapsed which means the robot
+ * should have moved 1 physical unit in the direction it was facing.
+ */
 IHANDLER_TIMER_2:
 	movia r2, IRQ_TIMER_2
 	and r2, r2, et
 	beq r2, r0, EXIT_IHANDLER
 
-	/* TODO: Disable motors + PWM interrupt. */
-	/* TODO: Advance cell... */
+	/* Disable all interrupts individually, so that when eret re-enables
+	 * the global interrupt bit, we remain in the ea's scope. */
+	wrctl ctl3, r0
+
+	/* Ensure we return to the appropriate state by setting 'ea'. */
+	movia r2, STATE_ADVANCE_CELL
+	addi r2, r2, 4 /* cancel out exit handler's subtraction */
+	stw r2, 8(sp) /* write to ea in stack */
 
 	/* ACK the timeout. */
 	movia r2, TIMER_2
