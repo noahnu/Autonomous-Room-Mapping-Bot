@@ -93,6 +93,15 @@ STATE_RESUME:
  * to a new position in the moveable area. We must determine the
  * direction the robot was facing, and along with its 'old' position,
  * determine the robot's current position.
+ *
+ * Note that this does NOT compute the NEXT position, but rather
+ * determines and records the CURRENT position. This is essentially
+ * the first part of a single 'turn' so to speak. Once we've established
+ * that we are in a CURRENT_POSITION, we will check if we must change direction
+ * (in the next state); for this reason, it may be better to implement the sensors
+ * via polling rather than interrupts, espcially considering the negative-edge
+ * detection introduces complications. With polling, we can:
+ * "Advance Pointer -> Scan Area -> Compute Path/Rotate -> Move -> (repeat)"
  */
 STATE_ADVANCE_CELL:
 	/* Disable global interrupts; critical section. */
