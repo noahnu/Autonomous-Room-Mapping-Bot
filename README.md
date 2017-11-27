@@ -3,9 +3,7 @@
 
 __Developed By__
 
-- Noah Negin-Ulster
-
-All source code was written exclusively by us (Noah & Sajid).
+- Noah Ulster (noahnu)
 
 ## Description
 
