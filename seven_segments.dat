@@ -1,0 +1,19 @@
+.global HEX_SEGMENTS_ARRAY
+.align 0
+HEX_SEGMENTS_ARRAY:
+.byte 0x0 /* 0 */
+.byte 0b00000110 /* 1 */
+.byte 0b01011011 /* 2 */
+.byte 0x01001111 /* 3 */
+.byte 0x01100110 /* 4 */
+.byte 0x01101101 /* 5 */
+.byte 0x01111101 /* 6 */
+.byte 0x00000111 /* 7 */
+.byte 0x11111111 /* 8 */
+.byte 0x01100111 /* 9 */
+.byte 0x01110111 /* 10, A */
+.byte 0x01111100 /* 11, b (lowercase) */
+.byte 0x00111001 /* 12, C */
+.byte 0x01011110 /* 13, d (lowercase) */
+.byte 0x01111001 /* 14, E */
+.byte 0x01110001 /* 15, F */

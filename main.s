@@ -4,6 +4,8 @@
 
 .data
 
+.include "seven_segments.dat"
+
 .global GRID_ARRAY_BASE
 .global GRID_ARRAY_END
 
