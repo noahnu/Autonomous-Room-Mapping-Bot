@@ -4,7 +4,6 @@
 __Developed By__
 
 - Noah Negin-Ulster
-- Sajid Ahmed
 
 All source code was written exclusively by us (Noah & Sajid).
 
