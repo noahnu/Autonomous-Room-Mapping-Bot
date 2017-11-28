@@ -17,3 +17,4 @@ HEX_SEGMENTS_ARRAY:
 .byte 0b01011110 /* 13, d (lowercase) */
 .byte 0b01111001 /* 14, E */
 .byte 0b01110001 /* 15, F */
+.byte 0x0
