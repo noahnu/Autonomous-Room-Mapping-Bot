@@ -128,6 +128,10 @@ STATE_ADVANCE_CELL:
 	movia r16, CURRENT_POSITION
 	stw r2, 0(r16)
 
+	/* Announce position. */
+	ldw r4, 0(r16)
+	call SEND_POSITION
+
 	/* Transition into scan mode. */
 	br STATE_SCAN_AHEAD
 
