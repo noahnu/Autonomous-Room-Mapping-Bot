@@ -28,9 +28,21 @@ SET_SEGMENTS:
 	call VAL_TO_HEX_SEGMENTS
 
 	/* Store r2 into r4(r16) */
-	slli r4, r4, 2 /* 2^2 = 4 */
-	add r16, r16, r4
-	stbio r2, 0(r16)
+	movia r5, 0x000000FF
+
+	ldw r4, 4(sp)
+	slli r4, r4, 3 /* <- r4 x 8 */
+	sll r5, r5, r4 /* create bitmask for the hex byte */
+	movia r3, 0xFFFFFFFF
+	xor r5, r5, r3 /* <- ~r5 */
+
+	ldwio r3, 0(r16) /* get the current bitmap */
+	and r3, r3, r5 /* clear target byte */
+
+	sll r2, r2, r4
+	or r3, r3, r2
+
+	stwio r3, 0(r16)
 
 	ldw ra, 0(sp)
 	ldw r4, 4(sp)
