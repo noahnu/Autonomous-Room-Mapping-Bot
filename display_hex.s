@@ -8,7 +8,7 @@
  *
  * Displays the lower 2 bytes of a word using 4 hex segments.
  */
-DISPLAY_HEX_HWORD:
+DISPLAY_HEX_2BYTES:
 	addi sp, sp, -8
 	stw ra, 0(sp)
 	stw r4, 4(sp)	
