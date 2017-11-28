@@ -15,6 +15,7 @@ DISPLAY_HEX_2BYTES:
 	
 	/* Display byte 1. */
 	ldb r4, 4(sp)
+	andi r4, r4, 0xF
 	mov r5, r0
 	call DISPLAY_HEX
 
@@ -25,6 +26,7 @@ DISPLAY_HEX_2BYTES:
 
 	/* Display byte 2. */
 	ldb r4, 5(sp)
+	andi r4, r4, 0xF
 	movi r5, 2
 	call DISPLAY_HEX
 
