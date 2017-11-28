@@ -36,8 +36,8 @@ _start:
 	movia r2, DEFAULT_LEGO_DIRECTION
 	stwio r2, 4(r8)
   
-	/* turn off all motors/sensors */
-	movia r2, 0xFA6FFFFF
+	/* turn off all motors/sensors  */
+	movia r2, 0xFA6FFFF5
 	stwio r2, 0(r8)
 
 	/* Configure PWM with Timer 1 */
@@ -72,7 +72,7 @@ STATE_RESUME:
 
 	/* Disable motors. Stop movement. */
 	movia r8, LEGO_CONTROLLER
-	movia r9, 0xFFFFFFFA /* 0b...1010 */
+	movia r9, 0xFFFFFFF5 /* 0b...0101 */
 	stwio r9, 0(r8)
 
 	/* Enable interrupt for Timer 1 & 2. */
