@@ -27,6 +27,9 @@ GRID_ARRAY_END:
 
 .global _start
 _start:
+	/* reset IRQ line */
+	wrctl ctl3, r0
+
 	/* set the stack pointer to end of SDRAM, aligned */
 	movia sp, SDRAM_END
 
