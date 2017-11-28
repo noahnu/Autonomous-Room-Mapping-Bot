@@ -130,6 +130,9 @@ STATE_ADVANCE_CELL:
 
 	/* Announce position. */
 	ldw r4, 0(r16)
+	call DISPLAY_HEX_2BYTES
+
+	ldw r4, 0(r16)
 	call SEND_POSITION
 
 	/* Transition into scan mode. */

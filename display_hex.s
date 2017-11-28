@@ -1,6 +1,43 @@
 .include "constants.s"
 
 .global DISPLAY_HEX
+.global DISPLAY_HEX_2BYTES
+
+/*
+ * Function DISPLAY_HEX_2BYTES(r4: Value)
+ *
+ * Displays the lower 2 bytes of a word using 4 hex segments.
+ */
+DISPLAY_HEX_HWORD:
+	addi sp, sp, -8
+	stw ra, 0(sp)
+	stw r4, 4(sp)	
+	
+	/* Display byte 1. */
+	ldb r4, 4(sp)
+	mov r5, r0
+	call DISPLAY_HEX
+
+	ldb r4, 4(sp)
+	srli r4, r4, 4
+	movi r5, 1
+	call DISPLAY_HEX
+
+	/* Display byte 2. */
+	ldb r4, 5(sp)
+	movi r5, 2
+	call DISPLAY_HEX
+
+	ldb r4, 5(sp)
+	srli r4, r4, 4
+	movi r5, 3
+	call DISPLAY_HEX
+
+	ldw ra, 0(sp)
+	ldw r4, 4(sp)
+	addi sp, sp, 8
+	
+	ret
 
 /*
  * Function DISPLAY_HEX(r4: Hex#, r5: Value)
