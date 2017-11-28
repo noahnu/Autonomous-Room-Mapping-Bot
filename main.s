@@ -17,7 +17,7 @@ CURRENT_POSITION:
 
 .align 0
 GRID_ARRAY_BASE:
-.skip 65536, 0 /* 512x512 array of (visited, obstacle) tuple */
+.skip 262144, 0 /* 512x512 array of (visited, obstacle) byte-padded tuple */
 GRID_ARRAY_END:
 .byte 0
 

@@ -80,7 +80,8 @@ GET_NEXT_CELL_DONE:
     mov r20, r2
 
     /* r4 = x:y */
-    orhi r4, r0, r19
+    slli r19, r19, 16
+    or r4, r0, r19
     or r4, r4, r20
     call XY_TO_POSITION
 
@@ -120,13 +121,13 @@ EXTRACT_XY:
     movia r2, GRID_ARRAY_BASE
     sub r16, r4, r2
 
-    /* x = offset / (512 * 4); range: [0, 512) */
-    slli r17, r17, 11 /* 2^11 = 512 * 4 */
+    /* x = offset / 512; range: [0, 512) */
+    movia r17, 1
+    slli r17, r17, 9 /* 2^9 = 512 */
     divu r2, r16, r17
     slli r2, r2, 16 /* move x into %hi(r2) */
 
-    /* offset_y = offset - (x * 512)
-     * y = offset_y / 4; range: [0, 512) */
+    /* y = offset - (x * 512); range: [0, 512) */
     mov r17, r2 /* r17 <- x */
     slli r17, r17, 9 /* r17 <- x * 2^9 */
     sub r17, r16, r17

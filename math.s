@@ -7,7 +7,7 @@
  * Returns FN_MIN(max, FN_MAX(min, value))
  */
 MATH_CLAMP:
-    ble r4, r6, MATH_CLAMP_LT_MAX
+    ble r4, r6, MATH_CLAMP_LE_MAX
 
     /* value > max; clamp: value = max */
     mov r2, r6
