@@ -147,7 +147,7 @@ STATE_SCAN_AHEAD:
 	 * If we can't move ahead, adjust direction accordingly. */
 
 	call IS_OBSTACLE_AHEAD
-	/* TODO: handle r2... */
+	/* TODO: handle if there's an obstacle... */
 
 	/* Resume takes care of re-enabling appropriate interrupts. */
 	br STATE_RESUME
