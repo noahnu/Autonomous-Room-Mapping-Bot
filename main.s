@@ -39,7 +39,7 @@ _start:
 	movia r2, DEFAULT_LEGO_DIRECTION
 	stwio r2, 4(r8)
   
-	/* turn off all motors/sensors  */
+	/* turn off all motors/sensors; + value mode  */
 	movia r2, 0xFA6FFFF5
 	stwio r2, 0(r8)
 
@@ -145,7 +145,9 @@ STATE_ADVANCE_CELL:
 STATE_SCAN_AHEAD:
 	/* Poll sensors to see if we can move straight ahead.
 	 * If we can't move ahead, adjust direction accordingly. */
-	 /* TODO */
+
+	call IS_OBSTACLE_AHEAD
+	/* TODO: handle r2... */
 
 	/* Resume takes care of re-enabling appropriate interrupts. */
 	br STATE_RESUME
