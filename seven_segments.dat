@@ -1,7 +1,7 @@
 .global HEX_SEGMENTS_ARRAY
 .align 0
 HEX_SEGMENTS_ARRAY:
-.byte 0x00111111 /* 0 */
+.byte 0b00111111 /* 0 */
 .byte 0b00000110 /* 1 */
 .byte 0b01011011 /* 2 */
 .byte 0b01001111 /* 3 */

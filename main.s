@@ -229,4 +229,3 @@ EXIT_IHANDLER:
 
 	addi ea, ea, -4
 	eret
-	
