@@ -14,25 +14,25 @@ DISPLAY_HEX_2BYTES:
 	stw r4, 4(sp)	
 	
 	/* Display byte 1. */
-	ldb r4, 4(sp)
-	andi r4, r4, 0xF
-	mov r5, r0
+	ldb r5, 4(sp)
+	andi r5, r5, 0xF
+	mov r4, r0
 	call DISPLAY_HEX
 
-	ldb r4, 4(sp)
-	srli r4, r4, 4
-	movi r5, 1
+	ldb r5, 4(sp)
+	srli r5, r5, 4
+	movi r4, 1
 	call DISPLAY_HEX
 
 	/* Display byte 2. */
-	ldb r4, 5(sp)
-	andi r4, r4, 0xF
-	movi r5, 2
+	ldb r5, 5(sp)
+	andi r5, r5, 0xF
+	movi r4, 2
 	call DISPLAY_HEX
 
-	ldb r4, 5(sp)
-	srli r4, r4, 4
-	movi r5, 3
+	ldb r5, 5(sp)
+	srli r5, r5, 4
+	movi r4, 3
 	call DISPLAY_HEX
 
 	ldw ra, 0(sp)
