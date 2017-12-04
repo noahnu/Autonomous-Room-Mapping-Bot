@@ -63,6 +63,7 @@ _start:
 	stw r8, 0(r2)
 
 	/* Reset direction to +y */
+	movia r2, CURRENT_DIRECTION
 	movia r8, DIRECTION_POS_Y
 	stw r8, 0(r2)
 
