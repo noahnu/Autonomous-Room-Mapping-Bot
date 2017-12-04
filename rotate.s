@@ -1,3 +1,5 @@
+.include "constants.s"
+
 .global ROTATE_RIGHT
 .global ROTATE_LEFT
 
