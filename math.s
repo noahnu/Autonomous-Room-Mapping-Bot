@@ -1,3 +1,5 @@
+.include "constants.s"
+
 /* Math utility functions. */
 
 .global MATH_CLAMP
