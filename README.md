@@ -62,3 +62,7 @@ Can also be simulated: http://cpulator.01xz.net
 High Level System Block Diagram:
 
 ![System Block Diagram](./images/System%20Block%20Diagram.png)
+
+## Challenges
+
+- Movement detection is based on "advancing" the cell's position based on a timer ellapse. We thus assume that the robot moves at a constant speed.
