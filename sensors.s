@@ -31,7 +31,7 @@ IS_OBSTACLE_AHEAD:
 
     /* Enable Sensor 0. */
 	movia r2, LEGO_CONTROLLER
-	ldw r3, 0(r2)
+	ldwio r3, 0(r2)
 	movia r2, 0xFFFFFBFF
 	and r3, r3, r2
 	stwio r3, 0(r2)
