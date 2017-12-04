@@ -21,6 +21,11 @@ GRID_ARRAY_BASE:
 GRID_ARRAY_END:
 .byte 0
 
+.global RANDOM_SEED
+.align 2
+RANDOM_SEED:
+.word 0xABCD1234
+
 /* ============ TEXT ============ */
 
 .text
@@ -147,11 +152,25 @@ STATE_SCAN_AHEAD:
 	/* Poll sensors to see if we can move straight ahead.
 	 * If we can't move ahead, adjust direction accordingly. */
 
+	/* If there's no obstacle ahead, continue in that direction.
+	 * Otherwise, traverse around obstacle. */
 	call IS_OBSTACLE_AHEAD
-	/* TODO: handle if there's an obstacle... */
+	bne r2, r0, STATE_TRAVERSE_OBSTACLE
 
 	/* Resume takes care of re-enabling appropriate interrupts. */
 	br STATE_RESUME
+
+/* There is an obstacle directly in front of the robot,
+ * attempt to traverse it. */
+STATE_TRAVERSE_OBSTACLE:
+	/* Strategy #1: Rotate to a random direction. */
+
+	call RANDOM_BIT
+	/* Rotate +90 deg or -90 deg depending on r2 */
+	/* bne r2, r0, ... */
+
+	/* Repeat obstacle check. */
+	br STATE_SCAN_AHEAD
 
 LOOP_FOREVER:
 	br LOOP_FOREVER

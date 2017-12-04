@@ -1,6 +1,7 @@
 /* Math utility functions. */
 
 .global MATH_CLAMP
+.global RANDOM_BIT
 
 /*
  * Function MATH_CLAMP(r4: value, r5: min, r6: max): r2
@@ -19,4 +20,25 @@ MATH_CLAMP_LE_MAX: /* value <= max */
 
 MATH_CLAMP_DONE:
     /* min <= value <= max */
+    ret
+
+/*
+ * Function RANDOM_BIT()
+ *
+ * Returns (r2) a coin toss.
+ */
+RANDOM_BIT:
+    movia r3, RANDOM_SEED
+    ldw r2, 0(r3)
+
+    movia r3, RANDOM_MULTIPLIER
+    mul r2, r2, r3
+
+    movia r3, RANDOM_INCREMENT
+    add r2, r2, r3
+
+    movia r3, RANDOM_SEED
+    stw r2, 0(r3)
+    andi r2, r2, 1
+
     ret
