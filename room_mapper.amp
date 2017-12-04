@@ -11,6 +11,14 @@
         <type>Assembly Program</type>
         <source_files>
             <source_file filepath="true">main.s</source_file>
+            <source_file filepath="true">constants.s</source_file>
+            <source_file filepath="true">display_hex.s</source_file>
+            <source_file filepath="true">math.s</source_file>
+            <source_file filepath="true">robot_position.s</source_file>
+            <source_file filepath="true">send_position.s</source_file>
+            <source_file filepath="true">uart_io.s</source_file>
+            <source_file filepath="true">rotate.s</source_file>
+            <source_file filepath="true">sensors.s</source_file>
         </source_files>
         <options>
             <start_symbol>_start</start_symbol>
