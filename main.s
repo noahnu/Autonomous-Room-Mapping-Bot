@@ -44,7 +44,8 @@ _start:
 	movia r2, DEFAULT_LEGO_DIRECTION
 	stwio r2, 4(r8)
   
-	/* turn off all motors/sensors; + value mode  */
+	/* turn off all motors/sensors; + value mode 
+	 * also set motors to fwd */
 	movia r2, 0xFA6FFFF5
 	stwio r2, 0(r8)
 
@@ -166,9 +167,15 @@ STATE_TRAVERSE_OBSTACLE:
 	/* Strategy #1: Rotate to a random direction. */
 
 	call RANDOM_BIT
-	/* Rotate +90 deg or -90 deg depending on r2 */
-	/* bne r2, r0, ... */
+	bne r2, r0, STATE_TRAVERSE_OBSTACLE_RL
 
+	call ROTATE_RIGHT
+	br STATE_TRAVERSE_OBSTACLE_DONE
+
+STATE_TRAVERSE_OBSTACLE_RL:
+	call ROTATE_LEFT
+
+STATE_TRAVERSE_OBSTACLE_DONE:
 	/* Repeat obstacle check. */
 	br STATE_SCAN_AHEAD
 

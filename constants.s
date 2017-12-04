@@ -17,6 +17,7 @@
 .equ OBSTACLE_THRESHOLD, 5 /* inclusive */
 .equ PWM_INTERVAL, 262150 /* 2.62ms */
 .equ POSITION_TMR_INTERVAL, 100000000 /* 1 second */
+.equ ROTATION_TMR_INTERVAL, 100000000 /* ~ 1 second */
 
 /* Direction ENUM */
 .equ DIRECTION_POS_X, 3 /* 0b11 */ 
