@@ -29,9 +29,9 @@ GET_NEXT_CELL:
 
     /* r2 <- x:y; r19: next x, r20: next y */
     call EXTRACT_XY
-    or r19, r0, r2
-    andi r19, r19, 0xFFFF
-    srli r20, r2, 16
+    or r20, r0, r2
+    andi r20, r20, 0xFFFF
+    srli r19, r2, 16
 
     /* r0: DIRECTION_NEG_Y */
     movi r16, DIRECTION_NEG_X
