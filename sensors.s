@@ -38,7 +38,7 @@ IS_OBSTACLE_AHEAD:
 
 POLL:
     /* Check valid bit. */
-    ldw r3, 0(r2)
+    ldwio r3, 0(r2)
     movia r16, 0x800
     and r16, r16, r3
     

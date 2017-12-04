@@ -14,7 +14,7 @@
 .equ PUSH_BUTTONS, 0xFF200050
 .equ JTAG_UART, 0x10001020
 
-.equ OBSTACLE_THRESHOLD, 5 /* inclusive */
+.equ OBSTACLE_THRESHOLD, 7 /* inclusive */
 .equ PWM_INTERVAL, 262150 /* 2.62ms */
 .equ POSITION_TMR_INTERVAL, 50000000 /* 500 milliseconds */
 .equ ROTATION_TMR_INTERVAL, 11500000 /* ~ 115 milliseconds */
