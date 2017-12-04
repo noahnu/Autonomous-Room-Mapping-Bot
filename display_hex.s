@@ -21,6 +21,7 @@ DISPLAY_HEX_2BYTES:
 
 	ldb r5, 4(sp)
 	srli r5, r5, 4
+	andi r5, r5, 0xF
 	movi r4, 1
 	call DISPLAY_HEX
 
@@ -32,6 +33,7 @@ DISPLAY_HEX_2BYTES:
 
 	ldb r5, 5(sp)
 	srli r5, r5, 4
+	andi r5, r5, 0xF
 	movi r4, 3
 	call DISPLAY_HEX
 
