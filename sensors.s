@@ -34,6 +34,8 @@ IS_OBSTACLE_AHEAD:
 	ldwio r3, 0(r2)
 	movia r2, 0xFFFFFBFF
 	and r3, r3, r2
+
+    movia r2, LEGO_CONTROLLER
 	stwio r3, 0(r2)
 
 POLL:

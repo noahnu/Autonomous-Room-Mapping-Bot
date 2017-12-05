@@ -28,6 +28,10 @@ GRID_ARRAY_END:
 RANDOM_SEED:
 .word 0xABCD1234
 
+.align 2
+STEPTHROUGH_HANDLED:
+.word 0
+
 /* ============ TEXT ============ */
 
 .text
@@ -75,6 +79,11 @@ _start:
 	movia r8, DIRECTION_POS_Y
 	stw r8, 0(r2)
 
+	/* Capture PUSH[1] when push buttons are used. */
+	movia r2, PUSH_BUTTONS
+	movia r8, 0x2 /* PUSH[1] */
+	stwio r8, 8(r2)
+
 /*
  * In this state, the application is resumed.
  */
@@ -87,8 +96,41 @@ STATE_RESUME:
 	movia r9, 0xFFFFFFF5 /* 0b...0101 */
 	stwio r9, 0(r8)
 
+	/* Reset IRQ line. We do this to support step-through mode,
+	 * and considering we re-enable the IRQ bits below anyway. */
+	wrctl ctl3, r0
+
+	/* Temp. IRQ */
+	mov r8, r0
+
+	/* Enable interrupt for PUSH[1]. */
+	ori r8, r8, IRQ_PUSH
+	wrctl ctl3, r8
+
+	/* If in step-through mode, wait for user input before proceeding. */
+	movia r9, SLIDER_SWITCHES
+	ldwio r2, 0(r9)
+	andi r2, r2, 1
+	beq r2, r0, STATE_RESUME_AUTOMODE
+
+	/* Slider #0 = 1 implies step-through mode. */
+	movia r9, STEPTHROUGH_HANDLED
+	ldw r2, 0(r9)
+
+	/* If stepthrough already handled, then finish resume. */
+	bne r2, r0, STATE_RESUME_AUTOMODE
+
+	/* Stepthrough not handled yet. Enable interrupts and wait. */
+	movi r2, 1
+	wrctl ctl0, r2
+	br STATE_PENDING
+
+STATE_RESUME_AUTOMODE:
+	movia r9, STEPTHROUGH_HANDLED
+	stw r0, 0(r9)
+
 	/* Enable interrupt for Timer 1 & 2. */
-	movia r8, IRQ_TIMER_1
+	ori r8, r8, IRQ_TIMER_1
 	ori r8, r8, IRQ_TIMER_2
 	wrctl ctl3, r8
 
@@ -99,8 +141,6 @@ STATE_RESUME:
 	movi r2, 1
 	wrctl ctl0, r2
 
-	/* TODO: Make sure these are RESET, not just continued? */
-
 	/* Enable PWM timer. */
 	movia r2, 7
 	stwio r2, 4(r8)
@@ -109,7 +149,7 @@ STATE_RESUME:
 	movia r2, 7
 	stwio r2, 4(r9)
 
-	br STATE_MOVE
+	br STATE_PENDING
 
 /*
  * This state is entered when the robot is deemed to have advanced
@@ -181,8 +221,9 @@ STATE_TRAVERSE_OBSTACLE_DONE:
 	/* Repeat obstacle check. */
 	br STATE_SCAN_AHEAD
 
-STATE_MOVE:
-	br STATE_MOVE
+/* Waiting for interrupts. */
+STATE_PENDING:
+	br STATE_PENDING
 
 .section .exceptions, "ax"
 IHANDLER:
@@ -207,6 +248,34 @@ IHANDLER:
 	stw r4, 20(sp)
 
 	rdctl et, ctl4 /* ipending */
+
+/*
+ * Push button for step-through.
+ */
+IHANDLER_PUSH:
+	movia r2, IRQ_PUSH
+	and r2, r2, et
+	beq r2, r0, IHANDLER_TIMER_1
+
+	movia r2, PUSH_BUTTONS
+	ldwio r3, 12(r2)
+	andi r3, r3, 2 /* PUSH[1] */
+	movi r4, 0xF
+	stwio r4, 12(r2) /* Clear edge capture register. */
+
+	beq r3, r0, IHANDLER_TIMER_1
+
+	/* PUSH[1] pushed. Ack stepthrough. */
+	movi r2, 1
+	movia r3, STEPTHROUGH_HANDLED
+	stw r2, 0(r3)
+	
+	/* Ensure we return to the appropriate state by setting 'ea'. */
+	movia r2, STATE_RESUME
+	addi r2, r2, 4 /* cancel out exit handler's subtraction */
+	stw r2, 8(sp) /* write to ea in stack */
+
+	br EXIT_IHANDLER
 
 /*
  * Simple Pulse-Width Modulation (PWM)

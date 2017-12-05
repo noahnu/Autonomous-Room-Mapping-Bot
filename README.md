@@ -11,7 +11,7 @@ __Developed By__
 
 A car drives around a room and sends spatial data to a computer, building a live map of a room.
 
-### Technical
+### Technical (Original)
 
 Dimensions of a rectangular "move area" is set using 7 slider switches on the DE1-SOC
 board. The segments #5-3 and segments #2-0 display the maximum width and height of
@@ -47,6 +47,15 @@ is sent via UART to a C program (we poll for available write space and stop move
 the car until the byte is written). The C program receives the position data with obstacle
 status and renders it on the screen (either graphically or with ASCII art).
 
+### Revisions to Design
+
+- Grid is a static size defined via the GRID_SIZE constant in `constants.s`.
+- No elaborate path finding algorithm implemented.
+- Sensor's obstacle detection switched to polling implementation.
+- Finite state machine implemented.
+
+Slider #0 is used to active step-through mode which pauses after each cycle of the finite state machine. The FSM is resumed via push button #1.
+
 ## System Requirements
 
 - DE1-SOC w/ NIOS II
@@ -65,4 +74,4 @@ High Level System Block Diagram:
 
 ## Challenges
 
-- Movement detection is based on the assumption that while in STATE_MOVE, the car drives at a constant speed with no change in direction. Since the car is attached to the Lego Controller's sensor board, the slightest tension in the 3 wires can cause the robot's position to be out of sync. Since rotation is based on the same principle, each rotation may cause the position to gradually become out of sync.
+- Movement detection is based on the assumption that while in STATE_PENDING, the car drives at a constant speed with no change in direction. Since the car is attached to the Lego Controller's sensor board, the slightest tension in the 3 wires can cause the robot's position to be out of sync. Since rotation is based on the same principle, each rotation may cause the position to gradually become out of sync.

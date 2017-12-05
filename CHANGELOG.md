@@ -40,3 +40,4 @@ Dec 4
 
 Dec 5 (Before Lab)
 - made grid size entirely dependent on constant's value
+- added "step-through" option on PUSH[1]

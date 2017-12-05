@@ -16,7 +16,7 @@ ROTATE_RIGHT:
     /* Save motor state. */
 	movia r2, LEGO_CONTROLLER
 	ldwio r2, 0(r2)
-    stwio r2, 0(sp)
+    stw r2, 0(sp)
 
     /* Motor 0 fwd, Motor 1 rev, and on */
     ori r2, r2, 8 /* motor 1 = rev */
@@ -38,6 +38,13 @@ ROTATE_RIGHT_POLL_TMR:
 
     addi sp, sp, 4
 
+    /* Update CURRENT_DIRECTION; dir = (dir + 1) % 4 */
+    movia r3, CURRENT_DIRECTION
+    ldw r3, 0(r2)
+    addi r3, r3, 1
+    andi r3, r3, 0x3
+    stw r3, 0(r2)
+
     ret
 
 /**
@@ -53,7 +60,7 @@ ROTATE_LEFT:
     /* Save motor state. */
 	movia r2, LEGO_CONTROLLER
 	ldwio r2, 0(r2)
-    stwio r2, 0(sp)
+    stw r2, 0(sp)
 
     /* Motor 0 rev, Motor 1 fwd, and on */
     ori r2, r2, 2 /* motor 0 = rev */
@@ -74,5 +81,12 @@ ROTATE_LEFT_POLL_TMR:
     stwio r2, 0(r3)
 
     addi sp, sp, 4
+
+    /* Update CURRENT_DIRECTION; dir = (dir + 3) % 4 */
+    movia r3, CURRENT_DIRECTION
+    ldw r3, 0(r2)
+    addi r3, r3, 3
+    andi r3, r3, 0x3
+    stw r3, 0(r2)
 
     ret
