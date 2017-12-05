@@ -48,7 +48,7 @@ POLL:
     bne r16, r0, POLL
 
     /* sensor data is valid */
-    srli r16, r16, 27
+    srli r16, r3, 27
     andi r16, r16, 0x0F
 
     mov r2, r0
