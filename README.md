@@ -65,4 +65,4 @@ High Level System Block Diagram:
 
 ## Challenges
 
-- Movement detection is based on "advancing" the cell's position based on a timer ellapse. We thus assume that the robot moves at a constant speed.
+- Movement detection is based on the assumption that while in STATE_MOVE, the car drives at a constant speed with no change in direction. Since the car is attached to the Lego Controller's sensor board, the slightest tension in the 3 wires can cause the robot's position to be out of sync. Since rotation is based on the same principle, each rotation may cause the position to gradually become out of sync.

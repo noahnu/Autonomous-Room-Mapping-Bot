@@ -19,7 +19,7 @@ CURRENT_POSITION:
 
 .align 0
 GRID_ARRAY_BASE:
-.skip 262144, 0 /* 512x512 array of (visited, obstacle) byte-padded tuple */
+.skip (GRID_SIZE * GRID_SIZE), 0 /* array of (visited, obstacle) byte-padded tuple */
 GRID_ARRAY_END:
 .byte 0
 
@@ -109,7 +109,7 @@ STATE_RESUME:
 	movia r2, 7
 	stwio r2, 4(r9)
 
-	br LOOP_FOREVER
+	br STATE_MOVE
 
 /*
  * This state is entered when the robot is deemed to have advanced
@@ -181,8 +181,8 @@ STATE_TRAVERSE_OBSTACLE_DONE:
 	/* Repeat obstacle check. */
 	br STATE_SCAN_AHEAD
 
-LOOP_FOREVER:
-	br LOOP_FOREVER
+STATE_MOVE:
+	br STATE_MOVE
 
 .section .exceptions, "ax"
 IHANDLER:

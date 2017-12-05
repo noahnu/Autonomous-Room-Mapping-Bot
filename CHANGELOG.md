@@ -14,6 +14,10 @@ Nov 21 (Before Lab)
 - Noah: Added state change logic (making use of a sort of finite state machine) to position timer interrupt.
 - Noah: Re-designed how part of the state transition works and how the sensors will be implemented (potentially).
 
+Nov 21 (In Lab)
+- Added grid positioning system and associated functions.
+- Added directions.
+
 Nov 27
 - Added 7 segment display functions.
 - Added UART
@@ -23,3 +27,16 @@ Nov 28 (Before Lab)
 - Fixed/debugged/tested quite a bit of older code.
 - send position function
 - did research prep for C program
+
+Nov 28 (In Lab)
+- Corrected some bugs.
+- Added check for obstacles.
+
+Dec 4
+- fixed some bugs in positioning system
+- added out of bounds error handling to obstacle function
+- added rotations upon obstacle encounter
+- added random bit generator
+
+Dec 5 (Before Lab)
+- made grid size entirely dependent on constant's value

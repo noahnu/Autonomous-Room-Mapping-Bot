@@ -69,7 +69,7 @@ GET_NEXT_CELL_NEG_Y:
 GET_NEXT_CELL_DONE:
     /* Bound x and y coordinates. */
     mov r5, r0
-    movi r6, 511 /* 512 - 1 */
+    movi r6, (GRID_SIZE - 1)
 
     mov r4, r19
     call MATH_CLAMP
@@ -121,15 +121,15 @@ EXTRACT_XY:
     movia r2, GRID_ARRAY_BASE
     sub r16, r4, r2
 
-    /* x = offset / 512; range: [0, 512) */
-    movia r17, 1
-    slli r17, r17, 9 /* 2^9 = 512 */
+    /* x = offset / GRID_SIZE; range: [0, GRID_SIZE) */
+    movia r17, GRID_SIZE
     divu r2, r16, r17
     slli r2, r2, 16 /* move x into %hi(r2) */
 
-    /* y = offset - (x * 512); range: [0, 512) */
+    /* y = offset - (x * GRID_SIZE); range: [0, GRID_SIZE) */
     mov r17, r2 /* r17 <- x */
-    slli r17, r17, 9 /* r17 <- x * 2^9 */
+    muli r17, r17, GRID_SIZE /* r17 <- x * GRID_SIZE */
+
     sub r17, r16, r17
     or r2, r2, r17 /* copy y into %lo(r2) */
     
@@ -149,12 +149,12 @@ XY_TO_POSITION:
     addi sp, sp, -4
     stw r3, 0(sp)
 
-    /* position = base + (512 * x) + y */
+    /* position = base + (GRID_SIZE * x) + y */
     movia r2, GRID_ARRAY_BASE
     
     srli r3, r4, 16 /* r3 <- x */
-    slli r3, r3, 9 /* r3 *= 2^9 (512) */
-    add r2, r2, r3 /* r2 += (512 * x) */
+    muli r3, r3, GRID_SIZE /* r3 *= GRID_SIZE */
+    add r2, r2, r3 /* r2 += (GRID_SIZE * x) */
 
     andi r3, r4, 0xFFFF
     add r2, r2, r3 /* r2 += y */
