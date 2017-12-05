@@ -30,7 +30,8 @@ SEND_POSITION:
     call WRITE_BYTE_TO_UART
 
     /* Send Obstacle Data */
-    ldb r4, 4(sp)
+    ldw r4, 4(sp)
+    ldb r4, 0(r4)
     call WRITE_BYTE_TO_UART
 
     ldw ra, 0(sp)
