@@ -184,6 +184,10 @@ STATE_ADVANCE_CELL:
 	movia r16, CURRENT_POSITION
 	stw r2, 0(r16)
 
+	/* Mark current position as "visited". */
+	movia r3, 0x2 /* (1, 0) => Visited, No Obstacle */
+	stb r3, 0(r2)
+
 	/* Announce position. */
 	ldw r4, 0(r16)
 	call DISPLAY_HEX_2BYTES
@@ -212,6 +216,21 @@ STATE_SCAN_AHEAD:
 STATE_TRAVERSE_OBSTACLE:
 	/* Strategy #1: Rotate to a random direction. */
 
+	/* Obstacle detected in GET_NEXT_CELL */
+	movia r16, CURRENT_POSITION
+	ldw r4, 0(r16)
+	movia r16, CURRENT_DIRECTION
+	ldw r5, 0(r16)
+	call GET_NEXT_CELL
+
+	/* Only update cell if cell exists. */
+	beq r2, r0, STATE_TRAVERSE_OBSTACLE_OOB
+
+	/* Mark current position as "obstacle". */
+	movia r3, 0x1 /* (0, 1) => Not Visited, Yes Obstacle */
+	stb r3, 0(r2)
+
+STATE_TRAVERSE_OBSTACLE_OOB:
 	call RANDOM_BIT
 	bne r2, r0, STATE_TRAVERSE_OBSTACLE_RL
 
