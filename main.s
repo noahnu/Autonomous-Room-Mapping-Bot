@@ -57,6 +57,7 @@ _start:
 
 	/* Configure PWM with Timer 1 */
 	movia r9, TIMER_1
+	stwio r0, 4(r9)
 	movia r2, PWM_INTERVAL
 	stwio r2, 8(r9)
 	srli r2, r2, 16
@@ -64,6 +65,7 @@ _start:
 
 	/* Configure position tracker with Timer 2 */
 	movia r9, TIMER_2
+	stwio r0, 4(r9)
 	movia r2, POSITION_TMR_INTERVAL
 	stwio r2, 8(r9)
 	srli r2, r2, 16
@@ -81,7 +83,7 @@ _start:
 
 	/* Capture PUSH[1] when push buttons are used. */
 	movia r2, PUSH_BUTTONS
-	movia r8, 0x2 /* PUSH[1] */
+	movia r8, 0x3 /* PUSH[0:1] */
 	stwio r8, 8(r2)
 
 /*
@@ -130,7 +132,6 @@ STATE_RESUME_AUTOMODE:
 	stw r0, 0(r9)
 
 	/* Enable interrupt for Timer 1 & 2. */
-	mov r8, r0
 	ori r8, r8, IRQ_TIMER_1
 	ori r8, r8, IRQ_TIMER_2
 	wrctl ctl3, r8
@@ -262,11 +263,27 @@ IHANDLER_PUSH:
 
 	movia r2, PUSH_BUTTONS
 	ldwio r3, 12(r2)
-	andi r3, r3, 2 /* PUSH[1] */
+	andi r3, r3, 3 /* 0b11; PUSH[0] or PUSH[1] */
 	movi r4, 0xF
 	stwio r4, 12(r2) /* Clear edge capture register. */
 
 	beq r3, r0, IHANDLER_TIMER_1
+
+	andi r2, r3, 1
+	beq r2, r0, IHANDLER_PUSH_1
+
+	/* PUSH[0] must have been pressed. Restart program. */
+	movia r2, _start
+	addi r2, r2, 4 /* cancel out exit handler's subtraction */
+	stw r2, 8(sp)
+
+	br EXIT_IHANDLER
+
+IHANDLER_PUSH_1:
+	/* If STEPTHROUGH_HANDLED is already acknowledged, skip. */
+	movia r2, STEPTHROUGH_HANDLED
+	ldw r3, 0(r2)
+	bne r3, r0, IHANDLER_TIMER_1
 
 	/* PUSH[1] pushed. Ack stepthrough. */
 	movi r2, 1

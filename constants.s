@@ -17,7 +17,7 @@
 
 .equ GRID_SIZE, 512
 
-.equ OBSTACLE_THRESHOLD, 7 /* inclusive */
+.equ OBSTACLE_THRESHOLD, 0xA /* inclusive */
 .equ PWM_INTERVAL, 262150 /* 2.62ms */
 .equ POSITION_TMR_INTERVAL, 50000000 /* 500 milliseconds */
 .equ ROTATION_TMR_INTERVAL, 11500000 /* ~ 115 milliseconds */
