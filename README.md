@@ -1,17 +1,24 @@
-# CSC385
-## Autonomous Room Mapping Bot
+# CSC385: Autonomous Room Mapping Bot
 
 __Developed By__
 
 - Noah Ulster (noahnu)
 
-## Description
-
-### Overview
+## Overview
 
 A car drives around a room and sends spatial data to a computer, building a live map of a room.
 
-### Technical (Original)
+## System Requirements
+
+- DE1-SOC w/ NIOS II
+    - [Docs: Assembler Directives](https://sourceware.org/binutils/docs/as/Pseudo-Ops.html#Pseudo-Ops)
+    - [Docs: Instruction Set](http://www-ug.eecg.toronto.edu/desl/manuals/n2cpu_nii51017.pdf)
+    - [Docs: Application Binary Interface](https://www.altera.com/content/dam/altera-www/global/en_US/pdfs/literature/hb/nios2/n2cpu_nii51016.pdf)
+- Lego Controller w/ sensors and motors
+
+Can also be simulated: http://cpulator.01xz.net (the simulator has a limitation with the use of UART; it only supports UART for the purpose of a simple car game as far as I can tell)
+
+## Technical Description: Original
 
 Dimensions of a rectangular "move area" is set using 7 slider switches on the DE1-SOC
 board. The segments #5-3 and segments #2-0 display the maximum width and height of
@@ -47,7 +54,11 @@ is sent via UART to a C program (we poll for available write space and stop move
 the car until the byte is written). The C program receives the position data with obstacle
 status and renders it on the screen (either graphically or with ASCII art).
 
-### Revisions to Design
+High Level System Block Diagram:
+
+![System Block Diagram](./images/System%20Block%20Diagram.png)
+
+## Revisions to Original Design
 
 - Grid is a static size defined via the GRID_SIZE constant in `constants.s`.
 - No elaborate path finding algorithm implemented.
@@ -56,22 +67,9 @@ status and renders it on the screen (either graphically or with ASCII art).
 
 Slider #0 is used to active step-through mode which pauses after each cycle of the finite state machine. The FSM is resumed via push button #1.
 
-## System Requirements
-
-- DE1-SOC w/ NIOS II
-    - [Docs: Assembler Directives](https://sourceware.org/binutils/docs/as/Pseudo-Ops.html#Pseudo-Ops)
-    - [Docs: Instruction Set](http://www-ug.eecg.toronto.edu/desl/manuals/n2cpu_nii51017.pdf)
-    - [Docs: Application Binary Interface](https://www.altera.com/content/dam/altera-www/global/en_US/pdfs/literature/hb/nios2/n2cpu_nii51016.pdf)
-- Lego Controller w/ sensors and motors
-
-Can also be simulated: http://cpulator.01xz.net
-
-## Architecture
-
-High Level System Block Diagram:
-
-![System Block Diagram](./images/System%20Block%20Diagram.png)
+![FSM](./images/FSM.png)
 
 ## Challenges
 
 - Movement detection is based on the assumption that while in STATE_PENDING, the car drives at a constant speed with no change in direction. Since the car is attached to the Lego Controller's sensor board, the slightest tension in the 3 wires can cause the robot's position to be out of sync. Since rotation is based on the same principle, each rotation may cause the position to gradually become out of sync.
+- There is no simple means of interfacing a C program with the DE1-SOC's UART interface. It seems as if we must read from the serial communication port directly. This was an unforseen complication and thus not implemented in the demonstrated version for the course.
