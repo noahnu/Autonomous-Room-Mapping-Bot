@@ -130,6 +130,7 @@ STATE_RESUME_AUTOMODE:
 	stw r0, 0(r9)
 
 	/* Enable interrupt for Timer 1 & 2. */
+	mov r8, r0
 	ori r8, r8, IRQ_TIMER_1
 	ori r8, r8, IRQ_TIMER_2
 	wrctl ctl3, r8
@@ -137,17 +138,19 @@ STATE_RESUME_AUTOMODE:
 	movia r8, TIMER_1
 	movia r9, TIMER_2
 
+	/* Reset & Enable PWM timer. */
+	movia r2, 7
+	stwio r0, 0(r8)
+	stwio r2, 4(r8)
+
+	/* Reset & Enable position timer. */
+	movia r2, 7
+	stwio r0, 0(r9)
+	stwio r2, 4(r9)
+
 	/* Re-/Enable global interrupts. */
 	movi r2, 1
 	wrctl ctl0, r2
-
-	/* Enable PWM timer. */
-	movia r2, 7
-	stwio r2, 4(r8)
-
-	/* Enable position timer. */
-	movia r2, 7
-	stwio r2, 4(r9)
 
 	br STATE_PENDING
 
