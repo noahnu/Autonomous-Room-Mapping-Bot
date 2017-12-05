@@ -39,7 +39,7 @@ ROTATE_RIGHT_POLL_TMR:
     addi sp, sp, 4
 
     /* Update CURRENT_DIRECTION; dir = (dir + 1) % 4 */
-    movia r3, CURRENT_DIRECTION
+    movia r2, CURRENT_DIRECTION
     ldw r3, 0(r2)
     addi r3, r3, 1
     andi r3, r3, 0x3
@@ -83,7 +83,7 @@ ROTATE_LEFT_POLL_TMR:
     addi sp, sp, 4
 
     /* Update CURRENT_DIRECTION; dir = (dir + 3) % 4 */
-    movia r3, CURRENT_DIRECTION
+    movia r2, CURRENT_DIRECTION
     ldw r3, 0(r2)
     addi r3, r3, 3
     andi r3, r3, 0x3
