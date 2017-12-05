@@ -73,3 +73,4 @@ Slider #0 is used to active step-through mode which pauses after each cycle of t
 
 - Movement detection is based on the assumption that while in STATE_PENDING, the car drives at a constant speed with no change in direction. Since the car is attached to the Lego Controller's sensor board, the slightest tension in the 3 wires can cause the robot's position to be out of sync. Since rotation is based on the same principle, each rotation may cause the position to gradually become out of sync.
 - There is no simple means of interfacing a C program with the DE1-SOC's UART interface. It seems as if we must read from the serial communication port directly. This was an unforseen complication and thus not implemented in the demonstrated version for the course.
+- DE1-SOC shuts down when there is too much strain on the motors.
